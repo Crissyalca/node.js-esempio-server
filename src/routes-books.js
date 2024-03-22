@@ -4,6 +4,7 @@ import {
   close,
   createBook,
   updateBook,
+  deleteBook,
 } from "./mongodb-connection.js";
 
 export const getAll = async (req, res) => {
@@ -58,18 +59,14 @@ export const getSingle = async (req, res) => {
 };
 
 export const deleteSingle = async (req, res) => {
-  let db = await readDb();
-  let book = db.books.find((book) => book.id == req.params.id);
-  if (book) {
-    // mi faccio dare tutti i libri
-    // li filtro in modo da ottnere tutti tranne quello selezionato
-    // scrivo tutti i libri ottenuti dal filtro
-    let booksToWrite = db.books.filter((book) => book.id != req.params.id);
-    db.books = booksToWrite;
-    await fs.writeFile("./db.json", JSON.stringify(db));
-    res.json({ status: "ok", book: book }); // ritormno al client ok e il valore della chiave books
+  // mi faccio dare tutti i libri
+  // li filtro in modo da ottnere tutti tranne quello selezionato
+  // scrivo tutti i libri ottenuti dal filtro
+  let [success, data] = await deleteBook(req.params.id);
+  if (success) {
+    res.status(200).json({ status: "ok", book: data }); // ritormno al client ok e il valore della chiave books
   } else {
-    res.status(404).json({ status: "error" });
+    res.status(400).json({ status: "error" });
   }
 };
 
