@@ -2,6 +2,7 @@ async function invia(id) {
   let res = await fetch(`http://localhost:3000/books/${id}`, {
     method: "PUT",
     headers: {
+      token: "h725",
       Accept: "application/json",
       "Content-Type": "application/json",
     },
@@ -15,4 +16,4 @@ async function invia(id) {
   let json = await res.json();
   console.log(json.status, res.status);
 }
-invia(1);
+invia();
